@@ -1,0 +1,51 @@
+#include "BruteForceSolver.h"
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+BruteForceSolver::BruteForceSolver() {}
+
+Solution BruteForceSolver::solve(const Instance& instance) {
+    int N = instance.getNumSegments();
+    int M = instance.getNumInfluencers();
+
+    int minCost = -1;
+    std::vector<int> bestSelected;
+
+    for (int mask = 0; mask < (1 << M); ++mask) {
+        int totalCost = 0;
+        std::set<int> coveredSegments;
+        std::vector<int> selectedInfluencers;
+
+        for (int i = 0; i < M; ++i) {
+            if (mask & (1 << i)) {
+                // El influencer i está seleccionado
+                totalCost += instance.getInfluencerCost(i);
+                const std::vector<int>& segmentos = instance.getInfluencerSegments(i);
+                coveredSegments.insert(segmentos.begin(), segmentos.end());
+                selectedInfluencers.push_back(i);
+            }
+        }
+
+        // Chequea si todos los segmentos están cubiertos
+        if (coveredSegments.size() == N) {
+            if (minCost == -1 || totalCost < minCost) {
+                minCost = totalCost;
+                bestSelected = selectedInfluencers;
+            }
+        }
+    }
+
+    
+    Solution bestSolution(M); 
+    if (minCost != -1) {
+        bestSolution.setCost(minCost);
+        bestSolution.setSelectedInfluencers(bestSelected);
+    } else {
+
+        bestSolution.setCost(-1);
+        bestSolution.setSelectedInfluencers({});
+    }
+    return bestSolution;
+}
+
