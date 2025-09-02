@@ -9,7 +9,7 @@ private:
     std::vector<int> selectedInfluencers;
 
 public:
-    // Constructors
+
     Solution(int numInfluencers);
     void addInfluencer(int influencer);
     void removeInfluencer(int influencer);
